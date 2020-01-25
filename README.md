@@ -1,6 +1,6 @@
 TODO: add ciseau to string tokenization: https://github.com/JonathanRaiman/ciseau
 
-TODO: add GLoVe as default embedding model https://github.com/JonathanRaiman/glove https://github.com/maciejkula/glove-python/tree/master/glove
+TODO: add GLoVe as default embedding model to remove genim dependency https://github.com/JonathanRaiman/glove https://github.com/maciejkula/glove-python/tree/master/glove
 
 
 
