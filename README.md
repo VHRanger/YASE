@@ -6,9 +6,9 @@ TODO: add GLoVe as default embedding model (see csrgraphs GLoVe implementation)
 
 # NLP utilities library
 
-The goal of this library is to make it easy to transform lists of sentences or sets of keywords into a matrix of embedding. This can be done either at the sentence/document level or by grouping sentence embeddings into grouped embeddings.
+The goal of this library is to make it easy to transform lists of sentences or sets of sentences into a matrix of embeddings (eg. one per sentence). This can be done either at the sentence/document level or by grouping sentence embeddings into grouped embeddings.
 
-Such matrices of documents can easily be queried using kd-trees (see notebook in examples) for the most similar document in training data to a queried sentence. It can also be used to cluster campaigns together solely by the text in the campaign.
+Such matrices of documents can easily be queried using kd-trees (see notebook in examples) for the most similar document in training data to a queried sentence. It can also be used to cluster document groups together solely by the text in the campaign.
 
 The results can be tested for quality on a handcrafted evaluation dataset by checking how well the sentence embeddings cluster around the natural clusters of the existing ad campaigns.
 
