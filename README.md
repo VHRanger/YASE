@@ -15,9 +15,11 @@ The results can be tested for quality on a handcrafted evaluation dataset by che
 The entire pipeline can be done in 4 lines:
 
     import gensim.downloader as model_api
+    import embeddinglib
+
     # Load pretrained gensim model
-    
     model = model_api.load("glove-wiki-gigaword-300")
+    
     # Tokenize list of sentences 
     tokens = stringprocessing.tokenize(ads['DESCRIPTION'], lower=True, split=True)
     
