@@ -1,6 +1,6 @@
 TODO: add ciseau to string tokenization: https://github.com/JonathanRaiman/ciseau
 
-TODO: add GLoVe as default embedding model to remove genim dependency https://github.com/JonathanRaiman/glove https://github.com/maciejkula/glove-python/tree/master/glove
+TODO: add GLoVe as default embedding model (see csrgraphs GLoVe implementation)
 
 
 
@@ -16,11 +16,14 @@ The entire pipeline can be done in 4 lines:
 
     import gensim.downloader as model_api
     # Load pretrained gensim model
+    
     model = model_api.load("glove-wiki-gigaword-300")
     # Tokenize list of sentences 
     tokens = stringprocessing.tokenize(ads['DESCRIPTION'], lower=True, split=True)
+    
     # get word weights for higher quality embeddings
     weights = embedding.getWordWeights(col, "tf-idf")
+    
     # create sentence embeddings from tokens
     my_embeddings = embedding.sentenceEmbedding(tokens, model, weights)
 
