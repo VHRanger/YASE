@@ -2,7 +2,7 @@ TODO: add ciseau to string tokenization: https://github.com/JonathanRaiman/cisea
 
 TODO: add GLoVe as default embedding model (see csrgraphs GLoVe implementation)
 
-
+TODO: Add LM (BERT, etc.) embedding support
 
 # NLP utilities library
 
