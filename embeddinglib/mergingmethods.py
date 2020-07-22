@@ -117,7 +117,7 @@ def pcaMerge(embeddings: Iterable[Iterable[float]]=[],
     """
     if weights is not None:
         embeddings = embeddings * weights[:, np.newaxis]
-    pc = TruncatedSVD(n_components=1, n_iter=7).fit(embeddings).components_[0]
+    res = TruncatedSVD(n_components=1, n_iter=7).fit(embeddings).components_[0]
     if normalize:
         res = Normalizer('l2', copy=False).fit_transform([res])[0]
-    return pc
+    return res
