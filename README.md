@@ -1,5 +1,7 @@
 TODO: add ciseau to string tokenization: https://github.com/JonathanRaiman/ciseau
 
+TODO: Rename to textrep
+
 TODO: add GLoVe as default embedding model (see csrgraphs GLoVe implementation)
 
 TODO: Add LM (BERT, etc.) embedding support
