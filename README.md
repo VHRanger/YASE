@@ -4,7 +4,7 @@ TODO: Rename to textrep
 
 TODO: add GLoVe as default embedding model (see csrgraphs GLoVe implementation)
 
-TODO: Add LM (BERT, etc.) embedding support
+TODO: Add LM (BERT, etc.) embedding support https://ai.googleblog.com/2020/08/language-agnostic-bert-sentence.html
 
 # NLP utilities library
 
