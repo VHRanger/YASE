@@ -1,7 +1,6 @@
 import collections
 import logging
 import gc
-import gensim
 import inspect
 import numpy as np
 import pandas as pd
@@ -13,9 +12,9 @@ from embeddinglib import mergingmethods
 
 def needs_tokenization(col):
     """
-
+    TODO: make it
     """
-    
+    pass
 
 
 
@@ -24,9 +23,6 @@ def getWordWeights(wordListVec: Iterable[Iterable[str]],
                    normalize=True
                    ) -> Iterable[Iterable[float]]:
     """
-    TODO (mranger): refactor!! remove gensim dependencies
-                    they complicate most of the logic for little gain
-                    Make sure new scaling is good, too
     Produce weights for words from a list of lists of words.
     The resulting shape is the same as wordListVec (eg. 1 weight per word)
     The weights are created only taking the wordListVec input into account
@@ -52,6 +48,11 @@ def getWordWeights(wordListVec: Iterable[Iterable[str]],
     :return: an vector of vectors of weights matching each word in each document
     :raises: ValueError
     """
+    # TODO: Below
+    import gensim
+    # TODO (mranger): refactor!! remove gensim dependencies
+    #                 they complicate most of the logic for little gain
+    #                 Make sure new scaling is good, too
     valid_methods = ['tf-idf', 'df', 'idf', 'tf']
     if method not in valid_methods:
         raise ValueError(
@@ -112,18 +113,19 @@ def getWordWeights(wordListVec: Iterable[Iterable[str]],
 
 
 def OOVWordStats(sentences: Iterable[Iterable[str]],
-                 model: gensim.models.keyedvectors,
+                 model,
                  ) -> dict:
     """
     Gets words out of Word2Vec model vocabulary
 
-    :param model: a trained Gensim keyedVector model (usually word2vec)
     :param sentences: 
         A iterable of iterables of words. 
         We assume the documents are already split in word lists
         eg. [["sale", "ford"], ["cheap", "good"]]
         If they aren't, use stringprocessing.tokenize beforehand
-    :type model: gensim.models.keyedvectors
+    :param model: a trained embedding model 
+        (usually gensim Keyedvectors object)
+        Needs to support ["word"] -> vector style API
     :type sentences: Iterable[str]
 
     :return: a dictionary mapping OOV words to their number of occurences
@@ -230,7 +232,7 @@ def mergeEmbeddings(embeddings: Iterable[Iterable[float]],
 
 
 def sentenceEmbedding(documentCol: Iterable[Iterable[str]],
-                      model: gensim.models.keyedvectors,
+                      model,
                       weights: Iterable[Iterable[float]]=None,
                       mergingFunction: FunctionType=mergingmethods.sumMerge,
                       mergingFunctionKwargs: dict={},
@@ -253,8 +255,9 @@ def sentenceEmbedding(documentCol: Iterable[Iterable[str]],
         We assume the documents are already split in word lists
         eg. [["sale", "ford"], ["cheap", "good"]]
         gets converted to a pd.series before treating
-    :param model:
-        a trained Gensim keyedVector model (usually word2vec)
+    :param model: a trained embedding model 
+        (usually gensim Keyedvectors object)
+        Needs to support ["word"] -> vector style API
     :param weights:
         weights on each words, to be used in the embedding merging method called
     :param mergingFunction:
@@ -349,7 +352,7 @@ def sentenceEmbedding(documentCol: Iterable[Iterable[str]],
 
 def groupedEmbedding(documentCol: Iterable[Iterable[str]],
                      groupKeyCol: Iterable[int],
-                     model: gensim.models.keyedvectors,
+                     model,
                      weights: Iterable[Iterable[float]]=None,
                      word2SentenceMerge: FunctionType=mergingmethods.avgMerge,
                      word2SentenceKwargs: dict={},
@@ -379,8 +382,9 @@ def groupedEmbedding(documentCol: Iterable[Iterable[str]],
     :param groupKeyCol:
         a vector of group keys co-indexed with each document in documentCol.
         This could be each paragraph a document belongs to, or author, etc.
-    :param model:
-        a trained Gensim keyedVector model (usually word2vec)
+    :param model: a trained embedding model 
+        (usually gensim Keyedvectors object)
+        Needs to support ["word"] -> vector style API
     :param weights:
         weights on each words, to be used in the embedding merging method called
     :param word2SentenceMerge:
