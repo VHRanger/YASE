@@ -26,8 +26,7 @@ def tokenizeCol(toClean: Iterable[str],
                 split: [bool, str]=True,
                 nanValue='',
                 lower: bool=False,
-                replaceDict: OrderedDict=REMOVE_CHAR,
-                expand=True
+                replaceDict: OrderedDict=REMOVE_CHAR
                 ) -> pd.Series:
     """
     applies transormatiosn to a series of strings in a vectorized fashion
@@ -83,9 +82,9 @@ def tokenizeCol(toClean: Iterable[str],
             return rep[re.escape(text.group(0))]
         result = result.str.replace(pattern, replacer)
     if type(split) is str:
-        result = result.str.split(split, expand=expand)
+        result = result.str.split(split)
     elif split:
-        result = result.str.split(expand=expand)
+        result = result.str.split()
     gc.collect()
     return result
 
@@ -94,8 +93,7 @@ def tokenize(colList: Iterable[Iterable[str]],
              split: [bool, str]=True,
              nanValue='',
              lower: bool=False,
-             replaceDict: OrderedDict=REMOVE_CHAR,
-             expand=True
+             replaceDict: OrderedDict=REMOVE_CHAR
              ) -> pd.Series:
     """
     Applies cleaning and tokenizing to one or many columns where each column is 
@@ -142,17 +140,14 @@ def tokenize(colList: Iterable[Iterable[str]],
     try:
         if type(colList[0]) is str:
             return tokenizeCol(colList, split=split, nanValue=nanValue, 
-                               lower=lower, expand=expand, 
-                               replaceDict=replaceDict)
+                               lower=lower, replaceDict=replaceDict)
     except KeyError: # pandas indexing breaks on [0] often
         if type(colList.iloc[0]) is str:
             return tokenizeCol(colList, split=split, nanValue=nanValue, 
-                               lower=lower, expand=expand, 
-                               replaceDict=replaceDict)
+                               lower=lower, replaceDict=replaceDict)
     result = tokenizeCol(colList[0], split=split, nanValue=nanValue, 
-                         lower=lower, expand=expand, replaceDict=replaceDict)
+                         lower=lower, replaceDict=replaceDict)
     for col in colList[1:]:
         result = result + tokenizeCol(col, split=split, nanValue=nanValue, 
-                                      lower=lower, expand=expand, 
-                                      replaceDict=replaceDict)
+                                      lower=lower, replaceDict=replaceDict)
     return result
