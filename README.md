@@ -1,9 +1,10 @@
-TODO: add ciseau to string tokenization: https://github.com/JonathanRaiman/ciseau
-
 TODO: Rename to textrep
-
+TODO: add support for weights in new embedder
+TODO: test new embedder more rigorously
+      separate text test from embedding testing
+TODO: fix wordweigts to pandas only version
+TODO: add ciseau to string tokenization: https://github.com/JonathanRaiman/ciseau
 TODO: add GLoVe as default embedding model (see csrgraphs GLoVe implementation)
-
 TODO: Add LM (BERT, etc.) embedding support https://ai.googleblog.com/2020/08/language-agnostic-bert-sentence.html
 
 # NLP utilities library
@@ -15,28 +16,15 @@ Such matrices of documents can easily be queried using kd-trees (see notebook in
 The results can be tested for quality on a handcrafted evaluation dataset by checking how well the sentence embeddings cluster around the natural clusters of the existing ad campaigns.
 
 The entire pipeline can be done in 4 lines:
-
+```python
     import gensim.downloader as model_api
     import embeddinglib
-
     # Load pretrained gensim model
     model = model_api.load("glove-wiki-gigaword-300")
-    
     # Tokenize list of sentences 
     tokens = stringprocessing.tokenize(ads['DESCRIPTION'], lower=True, split=True)
-    
     # get word weights for higher quality embeddings
     weights = embedding.getWordWeights(col, "tf-idf")
-    
     # create sentence embeddings from tokens
     my_embeddings = embedding.sentenceEmbedding(tokens, model, weights)
-
-# REMAINING TODOs:
-
-Add utilities to train own word2vec, retrain over existing word2vec, or doc2vec sentences. See here: https://github.com/RaRe-Technologies/gensim/blob/develop/docs/notebooks/doc2vec-lee.ipynb
-
-Add other evaluation benchmarks (quora duplicate questions dataset, SemEval, ...)
-
-Add other merging methods.
-
-Add utilities to train weights on original word2vec corpus (instead of inference corpus)
+```
