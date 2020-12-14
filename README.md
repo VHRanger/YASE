@@ -1,10 +1,6 @@
-TODO: Rename to textrep
-TODO: add support for weights in new embedder
-TODO: test new embedder more rigorously
-      separate text test from embedding testing
-TODO: fix wordweigts -> pandas version
-
 TODO: add ciseau to string tokenization: https://github.com/JonathanRaiman/ciseau
+
+TODO: Rename to textrep
 
 TODO: add GLoVe as default embedding model (see csrgraphs GLoVe implementation)
 
