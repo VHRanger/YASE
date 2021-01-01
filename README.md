@@ -9,7 +9,7 @@ TODO: fix wordweigts to pandas only version
 
 TODO: add ciseau to string tokenization: https://github.com/JonathanRaiman/ciseau
 
-TODO: Add WordPierce style tokenization: https://stackoverflow.com/questions/55382596/how-is-wordpiece-tokenization-helpful-to-effectively-deal-with-rare-words-proble/55416944#55416944
+TODO: Add WordPierce style tokenization: https://stackoverflow.com/questions/55382596/how-is-wordpiece-tokenization-helpful-to-effectively-deal-with-rare-words-proble/55416944#55416944 (also in BERTTokenizer)
 
 TODO: Add LM (BERT, etc.) embedding support
     https://ai.googleblog.com/2020/08/language-agnostic-bert-sentence.html
