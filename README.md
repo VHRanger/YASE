@@ -1,4 +1,4 @@
-TODO: Rename to textrep
+TODO: Try with VAEX to test speed
 
 TODO: add support for weights in new embedder
 
