@@ -11,6 +11,9 @@ TODO: add ciseau to string tokenization: https://github.com/JonathanRaiman/cisea
 
 TODO: Add WordPierce style tokenization: https://stackoverflow.com/questions/55382596/how-is-wordpiece-tokenization-helpful-to-effectively-deal-with-rare-words-proble/55416944#55416944 (also in BERTTokenizer)
 
+TODO: Add LM (BERT, etc.) embedding support
+    https://ai.googleblog.com/2020/08/language-agnostic-bert-sentence.html
+    http://mccormickml.com/2019/05/14/BERT-word-embeddings-tutorial/
 
 # NLP utilities library
 
