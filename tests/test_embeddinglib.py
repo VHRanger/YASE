@@ -10,9 +10,57 @@ from unittest import TestCase
 import embeddinglib
 from embeddinglib import mergeEmbeddings
 from embeddinglib.stringprocessing import tokenizeCol, tokenize
-from embeddinglib import stringprocessing
-from embeddinglib import mergingmethods
-from embeddinglib import embedding
+from embeddinglib import stringprocessing, mergingmethods, embedding, encoders
+
+import common_test_setups as cts
+
+# TODO: Test encoders.RobustOrdinalEncoder
+
+#################################
+#                               #
+#          Test Cases           #
+#                               #
+#################################
+
+class TestTopLevelFunctions(TestCase):
+    """
+    Testing the top level user functions
+    """
+    def test_given_correct_input_output_correct(self):
+        # Note this data is a list of lists (eg. one input each)
+        # the outer list is not a correct input for tokenizeCol!
+        tdata = deepcopy(cts.testdata)
+        tdata2 = pd.Series(cts.testdata, name="testcol")
+        tmodel = cts.mockW2V(cts.testmodel)
+        res = [
+            encoders.embed_column(tdata, tmodel, verbose=False, replace_dict=None, col_name="test"),
+            encoders.embed_column(tdata, tmodel, verbose=False, replace_dict=None),
+            encoders.embed_column(tdata2, tmodel, verbose=False, replace_dict=None, col_name="test"),
+            encoders.embed_column(tdata2, tmodel, verbose=False, replace_dict=None),
+        ]
+        for r in res:
+            self.assertTrue(r.iloc[0][0] > -9999999)
+
+
+class TestSKLAPIModels(TestCase):
+    """
+    Testing the top level user functions
+    """
+    def test_given_correct_input_output_correct(self):
+        # Note this data is a list of lists (eg. one input each)
+        # the outer list is not a correct input for tokenizeCol!
+        tdata = pd.DataFrame({
+            "first": pd.Series(cts.testdata), 
+            "second": pd.Series(cts.testdata)
+        })
+        tmodel = cts.mockW2V(cts.testmodel)
+        m1 = encoders.ColumnEmbedder(
+            tmodel, verbose=False, threads=1, replace_dict=None, min_rows=1e10)
+        res = [
+            m1.transform(tdata),
+        ]
+        for r in res:
+            self.assertTrue(r.iloc[0][0] > -9999999)
 
 
 class TestIsolatedStringProcessing(TestCase):
@@ -23,10 +71,8 @@ class TestIsolatedStringProcessing(TestCase):
         # Note this data is a list of lists (eg. one input each)
         # the outer list is not a correct input for tokenizeCol!
         tdata = [
-            ["157681 Miles. Only $12,849", 
-             "Used 2006 Ford F-150"],
-            ["\"city, state\" format (quotes)", 
-             "different 'quotes'"],
+            [cts.testdata[0], cts.testdata[1]],
+            [cts.testdata[2], cts.testdata[3]],
         ]
         for i in range(len(tdata)):
             tdata[i] = pd.Series(tdata[i])
@@ -181,95 +227,6 @@ class testEmbeddingMerging(TestCase):
             np.mean(tembeddings * np.array(tweights[2])[:, np.newaxis], axis=0))
 
 
-def given_tdocs():
-    """test docs for groupedEmbedding"""
-    return [
-        ["157681", "miles.", "only", "$12,849"], 
-        ["used", "2006", "ford", "f-150", 'repeatedword'],
-        ["\"city,", "state\"", "format", "(quotes)", 'repeatedword'], 
-        ["different", "'quotes'"],
-        ["######", "miles", "only", "#####"], 
-        ["used", "####", "ford", "f-###"],
-        ["city", "state", "format", "quotes"], 
-        ["different", "quotes"]]
-
-def given_repeated_words():
-    """doc with repeated words"""
-    return [["test", "test", "test"],
-           ["unique", "words", "except", "here"],
-           ["test", "again", "here"]]
-
-def given_tgroups():
-    """test columns keys, indexed with tdocs"""
-    return [1, 1, 1, 1, 2, 2, 3, 3]
-
-def given_normalized_tweights():
-    "test weights coindexed to tdocs"
-    return [
-        [0.5, 0.2, 0.2, 0.1], 
-        [0.3, 0.3, 0.3, 0.05, 0.05],
-        [0.25, 0.25, 0.25, 0.20, 0.05], 
-        [1,  0],
-        [0, 0.000001, 0.9, 0.999999], 
-        [0.8, 0.05, 0.05, 0.1],
-        [0.1, 0.7, 0.01, 0.19], 
-        [0.5, 0.5]]
-
-def given_tweights():
-    "test weights coindexed to tdocs"
-    return [
-        [5, 2, 20, 10000], 
-        [3, 3, 3, 1],
-        [0.0000025, 0.25, 2500, 250], 
-        [1,  0],
-        [0, 0.000001, 9, 999999], 
-        [8, 0.05, 0.05, 1],
-        [1, 7, 0.000001, 19], 
-        [5, 5.]]
-
-class mockW2V(object):
-    """Mock gensim.models.keyedvectors class"""
-    def __init__(self, embeddingDict):
-        """init based on a word embedding dict[str -> np.array]"""
-        self.embeddings = embeddingDict
-        self.words = list(embeddingDict.keys())
-        self.vector_size = len(self.embeddings[self.words[0]])
-        for word in self.words:
-            assert len(self.embeddings[word]) == self.vector_size, (
-                "vector length not the same fro all mock word2vec model input")
-
-    def __getitem__(self, key):
-        return self.embeddings[key]
-
-    def remove(self, key):
-        self.embeddings.pop(key)
-        self.words = list(self.embeddings.keys())
-
-    def keys(self):
-        return self.words
-
-def given_mock_keyedVectors():
-    """
-    mock a gensim keyedVector object 
-    (base class of word2vec)
-    """
-    # concat list of lists to unique words
-    all_words = list(set(sum(given_tdocs(), [])))
-    mymock = {}
-    for word in range(len(all_words)):
-        mymock[all_words[word]] = np.array([0.1, 0.2, 0.3]) * word
-    return mockW2V(mymock)
-
-def given_incomplete_keyedVectors():
-    """
-    mock gensim keyedVector object with missing words
-    """
-    kv = given_mock_keyedVectors()
-    for _ in range(4):
-        kv.remove(random.choice(list(kv.keys())))
-    return kv
-
-
 class TestWordWeights(TestCase):
     """
     tests for the getWordWeights function
@@ -294,7 +251,7 @@ class TestWordWeights(TestCase):
                 normalizedtf[i], normalizeddf[i])
 
     def test_given_wordlist_tf_idf_count_normally(self):
-        tdocs= given_repeated_words()
+        tdocs= cts.given_repeated_words()
         tf = embedding.getWordWeights(tdocs, "tf", False)
         np.testing.assert_array_almost_equal(tf[0], [4, 4, 4])
         np.testing.assert_array_almost_equal(tf[1], [1, 1, 1, 2])
@@ -305,11 +262,11 @@ class TestWordWeights(TestCase):
         np.testing.assert_array_almost_equal(df[2], [2, 1, 2])
 
     def test_given_normalized_sums_1(self):
-        normalizedtf = embedding.getWordWeights(given_tdocs(), "tf", True)
-        normalizeddf = embedding.getWordWeights(given_tdocs(), "df", True)
-        normalizeddf = embedding.getWordWeights(given_tdocs(), "idf", True)
-        normalizedtfidf = embedding.getWordWeights(given_tdocs(), "tf-idf", True)
-        for i in range(len(given_tdocs())):
+        normalizedtf = embedding.getWordWeights(cts.given_tdocs(), "tf", True)
+        normalizeddf = embedding.getWordWeights(cts.given_tdocs(), "df", True)
+        normalizeddf = embedding.getWordWeights(cts.given_tdocs(), "idf", True)
+        normalizedtfidf = embedding.getWordWeights(cts.given_tdocs(), "tf-idf", True)
+        for i in range(len(cts.given_tdocs())):
             for res in [normalizedtf[i], normalizeddf[i], 
                         normalizeddf[i], normalizedtfidf[i]]:
                 self.assertAlmostEqual(res.sum(), 1)
@@ -317,7 +274,7 @@ class TestWordWeights(TestCase):
     def test_given_repeated_words_output_dim_ok(self):
         """repeated words break gensim pipeline by default
            check weights are OK here"""
-        tdocs = given_repeated_words()
+        tdocs = cts.given_repeated_words()
         for method in ["tf", "idf", "df", "tf-idf"]:
             ww = embedding.getWordWeights(tdocs, method)
             for line in range(len(tdocs)):
@@ -330,8 +287,8 @@ class TestSentenceEmbedding(TestCase):
         """
         Test that OOV words apply equally and don't break pipeline
         """
-        tdocs = given_tdocs()
-        w2vec = given_incomplete_keyedVectors()
+        tdocs = cts.given_tdocs()
+        w2vec = cts.given_incomplete_keyedVectors()
         meanEmbeddingsManual, oov_stats = embedding.sentenceEmbedding(
             tdocs, model=w2vec, weights=None,
             mergingFunction=np.mean,
@@ -352,16 +309,14 @@ class TestSentenceEmbedding(TestCase):
                 meanEmbeddingsManual[key],
                 meanEmbeddings[key])
 
-
-
 class TestGroupedEmbedding(TestCase):
     """
     basic checks for groupedEmbedding function
     """    
     def test_given_list_input_input_untouched(self):
-        tdocs = given_tdocs()
-        tgroups = given_tgroups()
-        w2vec = given_mock_keyedVectors()
+        tdocs = cts.given_tdocs()
+        tgroups = cts.given_tgroups()
+        w2vec = cts.given_mock_keyedVectors()
         gembeddings = embedding.groupedEmbedding(
             tdocs, tgroups, model=w2vec, verbose=False)
         self.assertTrue(type(tdocs) == list and type(tgroups) == list,
@@ -373,9 +328,9 @@ class TestGroupedEmbedding(TestCase):
         """
         test function from mergingmethods.py works with tautological equivalent
         """
-        tdocs = given_tdocs()
-        tgroups = given_tgroups()
-        w2vec = given_mock_keyedVectors()
+        tdocs = cts.given_tdocs()
+        tgroups = cts.given_tgroups()
+        w2vec = cts.given_mock_keyedVectors()
         meanEmbeddingsManual = embedding.groupedEmbedding(
             tdocs, tgroups, model=w2vec, weights=None,
             word2SentenceMerge=np.mean,
@@ -397,9 +352,9 @@ class TestGroupedEmbedding(TestCase):
         """
         test function from mergingmethods.py works with tautological equivalent
         """
-        tdocs = given_tdocs()
-        tgroups = given_tgroups()
-        w2vec = given_mock_keyedVectors()
+        tdocs = cts.given_tdocs()
+        tgroups = cts.given_tgroups()
+        w2vec = cts.given_mock_keyedVectors()
         meanEmbeddingsManual = embedding.groupedEmbedding(
             tdocs, tgroups, model=w2vec,
             word2SentenceMerge='pooled',
@@ -420,9 +375,9 @@ class TestGroupedEmbedding(TestCase):
         """
         test function from mergingmethods.py works with tautological equivalent
         """
-        tdocs = given_tdocs()
-        tgroups = given_tgroups()
-        w2vec = given_mock_keyedVectors()
+        tdocs = cts.given_tdocs()
+        tgroups = cts.given_tgroups()
+        w2vec = cts.given_mock_keyedVectors()
         meanEmbeddingsManual = embedding.groupedEmbedding(
             tdocs, tgroups, model=w2vec,
             word2SentenceMerge='unique',
@@ -443,9 +398,9 @@ class TestGroupedEmbedding(TestCase):
         """
         Test that OOV words apply equally and don't break pipeline
         """
-        tdocs = given_tdocs()
-        tgroups = given_tgroups()
-        w2vec = given_incomplete_keyedVectors()
+        tdocs = cts.given_tdocs()
+        tgroups = cts.given_tgroups()
+        w2vec = cts.given_incomplete_keyedVectors()
         meanEmbeddingsManual = embedding.groupedEmbedding(
             tdocs, tgroups, model=w2vec, weights=None,
             word2SentenceMerge=np.mean,
@@ -463,18 +418,18 @@ class TestGroupedEmbedding(TestCase):
                 meanEmbeddingsManual[key],
                 meanEmbeddings[key])
 
-    def test_given_weights_tautological_works(self):
+    def test_weights_tautological_works(self):
         """ 
         test that weights work normally in a tautological check
         """
         meanEmbeddings = embedding.groupedEmbedding(
-            given_tdocs(), given_tgroups(), 
-            model=given_incomplete_keyedVectors(), 
-            weights=given_normalized_tweights(),
+            cts.given_tdocs(), cts.given_tgroups(), 
+            model=cts.given_incomplete_keyedVectors(), 
+            weights=cts.given_normalized_tweights(),
             word2SentenceMerge=mergingmethods.sumMerge,
             sentence2GroupMerge=mergingmethods.sumMerge,
             verbose=False)
-        w2vec = given_incomplete_keyedVectors()
+        w2vec = cts.given_incomplete_keyedVectors()
         for key in meanEmbeddings:
             self.assertEqual(len(meanEmbeddings[key]),
                              w2vec.vector_size)
@@ -485,24 +440,24 @@ class TestGroupedEmbedding(TestCase):
         """
         # Just there to integration test normalization
         meanEmbeddings_n = embedding.groupedEmbedding(
-            given_tdocs(), given_tgroups(), 
-            model=given_incomplete_keyedVectors(), 
-            weights=given_normalized_tweights(),
+            cts.given_tdocs(), cts.given_tgroups(), 
+            model=cts.given_incomplete_keyedVectors(), 
+            weights=cts.given_normalized_tweights(),
             word2SentenceMerge=mergingmethods.sumMerge,
             sentence2GroupMerge=mergingmethods.avgMerge,
             sentence2GroupKwargs={"components_to_remove": 1, 
                                   "normalize": True},
             verbose=False)
         meanEmbeddings = embedding.groupedEmbedding(
-            given_tdocs(), given_tgroups(), 
-            model=given_incomplete_keyedVectors(), 
-            weights=given_normalized_tweights(),
+            cts.given_tdocs(), cts.given_tgroups(), 
+            model=cts.given_incomplete_keyedVectors(), 
+            weights=cts.given_normalized_tweights(),
             word2SentenceMerge=mergingmethods.sumMerge,
             sentence2GroupMerge=mergingmethods.avgMerge,
             sentence2GroupKwargs={"components_to_remove": 1, 
                                   "normalize": False},
             verbose=False)
-        w2vec = given_incomplete_keyedVectors()
+        w2vec = cts.given_incomplete_keyedVectors()
         for key in meanEmbeddings:
             self.assertEqual(len(meanEmbeddings[key]),
                              w2vec.vector_size)
@@ -511,14 +466,14 @@ class TestGroupedEmbedding(TestCase):
 
     def test_given_weight_embedding_mismatch_raises(self):
         """weight dimension != embedding dimension should raise"""
-        bad_weights = given_normalized_tweights()
+        bad_weights = cts.given_normalized_tweights()
         bad_weights[0] = bad_weights[0][:-1]
         bad_weights[1] = bad_weights[0][:-2]
         with self.assertRaises(ValueError):
             try:
                 meanEmbeddings = embedding.groupedEmbedding(
-                    given_tdocs(), given_tgroups(), 
-                    model=given_incomplete_keyedVectors(), 
+                    cts.given_tdocs(), cts.given_tgroups(), 
+                    model=cts.given_incomplete_keyedVectors(), 
                     weights=bad_weights,
                     word2SentenceMerge=mergingmethods.sumMerge,
                     sentence2GroupMerge=mergingmethods.sumMerge,

@@ -1,21 +1,39 @@
-TODO: Try with VAEX to test speed
+# TODO: 
 
-TODO: add support for weights in new embedder
+10. fix imports -- rename -- move pandas stuff to pandas folder
 
-TODO: test new embedder more rigorously
+10. Use MUSE Models in 9
+
+-----
+NEXT TASKS
+
+- pyarrow based processing
+    - using: https://arrow.apache.org/docs/python/generated/pyarrow.compute.ascii_split_whitespace.html#pyarrow.compute.ascii_split_whitespace
+
+- Support Vaex
+
+- Caching to avoid repeat embeddings
+
+- support https://huggingface.co/blog/fasttext
+
+- add support for weights in new embedder
+
+- Add vaex streaming disk-to-disk support
+
+- support SGPT https://github.com/Muennighoff/sgpt
+
+- test new embedder more rigorously
       separate text test from embedding testing
 
-TODO: fix wordweigts to pandas only version
+- support PolaRS (maybe just through PyArrow)
 
-TODO: add ciseau to string tokenization: https://github.com/JonathanRaiman/ciseau
+- Add WordPierce style tokenization: https://stackoverflow.com/questions/55382596/how-is-wordpiece-tokenization-helpful-to-effectively-deal-with-rare-words-proble/55416944#55416944 (also in BERTTokenizer)
 
-TODO: Add WordPierce style tokenization: https://stackoverflow.com/questions/55382596/how-is-wordpiece-tokenization-helpful-to-effectively-deal-with-rare-words-proble/55416944#55416944 (also in BERTTokenizer)
+- Support making the whole pipeline into an object to put in other models
 
-TODO: Add LM (BERT, etc.) embedding support
-    https://ai.googleblog.com/2020/08/language-agnostic-bert-sentence.html
-    http://mccormickml.com/2019/05/14/BERT-word-embeddings-tutorial/
+- make own fast se lib
 
-# NLP utilities library
+# Yet Another Sentence Embedding Library
 
 The goal of this library is to make it easy to transform lists of sentences or sets of sentences into a matrix of embeddings (eg. one per sentence). This can be done either at the sentence/document level or by grouping sentence embeddings into grouped embeddings.
 
@@ -35,4 +53,11 @@ The entire pipeline can be done in 4 lines:
     weights = embedding.getWordWeights(col, "tf-idf")
     # create sentence embeddings from tokens
     my_embeddings = embedding.sentenceEmbedding(tokens, model, weights)
+```
+
+
+## Running unit tests
+
+```
+python -m unittest discover tests
 ```

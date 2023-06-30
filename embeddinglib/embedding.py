@@ -10,14 +10,6 @@ from typing import Iterable
 from embeddinglib import mergingmethods
 
 
-def needs_tokenization(col):
-    """
-    TODO: make it
-    """
-    pass
-
-
-
 def getWordWeights(wordListVec: Iterable[Iterable[str]],
                    method="tf-idf",
                    normalize=True
@@ -109,56 +101,6 @@ def getWordWeights(wordListVec: Iterable[Iterable[str]],
         for wordlist in weightTupleList:
             res.append(np.array([weightTuple[1]
                         for weightTuple in wordlist]))
-    return res 
-
-
-def OOVWordStats(sentences: Iterable[Iterable[str]],
-                 model,
-                 ) -> dict:
-    """
-    Gets words out of Word2Vec model vocabulary
-
-    :param sentences: 
-        A iterable of iterables of words. 
-        We assume the documents are already split in word lists
-        eg. [["sale", "ford"], ["cheap", "good"]]
-        If they aren't, use stringprocessing.tokenize beforehand
-    :param model: a trained embedding model 
-        (usually gensim Keyedvectors object)
-        Needs to support ["word"] -> vector style API
-    :type sentences: Iterable[str]
-
-    :return: a dictionary mapping OOV words to their number of occurences
-            and a list of the rows where they appear
-    :rtype: dict(word -> [number occurences, [row locations]])
-    """
-    # return value of missing words dict
-    unique_words = set()
-    total_words = 0
-    total_missing = 0
-    missing_rows = set()
-    missing_words = collections.defaultdict(lambda: [0, []])
-    for row_num in range(len(sentences)):
-        row = sentences[row_num]
-        for word in row:
-            total_words += 1
-            try:
-                unique_words.add(word)
-                model[word]
-            except KeyError:
-                missing_rows.add(row_num)
-                total_missing += 1
-                missing_words[word][0] += 1
-                missing_words[word][1].append(row_num)
-    res = {}
-    res['unique_words'] = unique_words
-    res['total_words'] = total_words
-    res['total_missing'] = total_missing
-    res['missing_words'] = missing_words.keys()
-    res['missing_words_dict'] = missing_words
-    res['missing_rows_list'] = missing_rows
-    res['total_rows'] = len(sentences)
-    res['oov_row_pct']= res['total_missing'] / res['total_words']
     return res
 
 #
