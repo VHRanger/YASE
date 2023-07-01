@@ -3,6 +3,7 @@ This file contains SKLearn API compatible encoders
 """
 from operator import itemgetter
 import gc
+from yase.pandas import stringprocessing
 from joblib import Parallel, delayed
 import numpy as np
 import pandas as pd
@@ -11,8 +12,8 @@ import time
 
 import pyarrow as pa
 
-import embeddinglib
-from embeddinglib import stringprocessing, utils
+import yase
+from yase import utils
 
 import fse
 
@@ -98,7 +99,7 @@ def embed_column(column, model, model_router=None, verbose=True,
             col, lower=True, split=True, replaceDict=replace_dict
         )
         # create sentence embeddings from tokens
-        res = embeddinglib.embedding.sentenceEmbedding(
+        res = yase.embedding.sentenceEmbedding(
             tokens, model, verbose=verbose
         )
         # Cleanup memory before treating next column

@@ -1,16 +1,17 @@
 """
 Separate tests here for arrow data formats
 """
+from yase.pandas import embedding, stringprocessing
 import pyarrow as pa
 
 import unittest
 from unittest import TestCase
 
 
-import embeddinglib
-from embeddinglib import mergeEmbeddings
-from embeddinglib.stringprocessing import tokenizeCol, tokenize
-from embeddinglib import stringprocessing, mergingmethods, embedding, encoders
+import yase
+from yase import mergeEmbeddings
+from yase.pandas.stringprocessing import tokenizeCol, tokenize
+from yase import mergingmethods, encoders
 
 import common_test_setups as cts
 

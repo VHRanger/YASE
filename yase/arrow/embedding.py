@@ -7,7 +7,7 @@ import pandas as pd
 from types import FunctionType
 from typing import Iterable
 
-from embeddinglib import mergingmethods
+from yase import mergingmethods
 
 
 def getWordWeights(wordListVec: Iterable[Iterable[str]],

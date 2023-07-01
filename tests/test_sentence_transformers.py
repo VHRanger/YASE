@@ -5,6 +5,7 @@ https://www.sbert.net/
 
 """
 from copy import deepcopy
+from yase.pandas import embedding, stringprocessing
 import gensim
 import numpy as np
 import pandas as pd
@@ -14,12 +15,12 @@ import unittest
 from unittest import TestCase
 import tempfile
 
-import embeddinglib
-from embeddinglib import mergeEmbeddings
-from embeddinglib.stringprocessing import tokenizeCol, tokenize
-from embeddinglib import (
-    stringprocessing, mergingmethods, 
-    embedding, encoders, utils
+import yase
+from yase import mergeEmbeddings
+from yase.pandas.stringprocessing import tokenizeCol, tokenize
+from yase import (
+    mergingmethods, 
+    encoders, utils
 )
 
 from sentence_transformers import SentenceTransformer

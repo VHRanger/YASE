@@ -4,14 +4,7 @@ import pandas as pd
 import re
 from typing import Iterable
 
-# cleans up most punctuation, removes accents
-# replace by space to avoid word concatenation
-#     whitespace splitting then removes added spaces 
-REMOVE_CHAR = OrderedDict({
-'{':" ", '}':" ", ',':"", '.':" ", '!':" ", '\\':" ", '/':" ", '$':" ", '%':" ",
-'^':" ", '?':" ", '\'':" ", '"':" ", '(':" ", ')':" ", '*':" ", '+':" ", '-':" ",
-'=':" ", ':':" ", ';':" ", ']':" ", '[':" ", '`':" ", '~':" ",
-})
+from yase.utils import REMOVE_CHAR
 
 # TODO (mranger): Unit test text cleaning procedure more rigorously
 #   Add dict to remove accents? Also smart rules on some characters

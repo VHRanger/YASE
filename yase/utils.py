@@ -1,8 +1,7 @@
-from numpy import (
-    zeros, dtype, float32, ascontiguousarray, 
-    fromstring
-)
+from collections import OrderedDict
+import numpy as np
 import pandas as pd
+import tempfile
 
 ######################################
 #                                    #
@@ -41,6 +40,15 @@ try:
     HAS_SBERT = True
 except: pass
 
+# Below dict used in string processing
+# cleans up most punctuation, removes accents
+# replace by space to avoid word concatenation
+#     whitespace splitting then removes added spaces 
+REMOVE_CHAR = OrderedDict({
+'{':" ", '}':" ", ',':"", '.':" ", '!':" ", '\\':" ", '/':" ", '$':" ", '%':" ",
+'^':" ", '?':" ", '\'':" ", '"':" ", '(':" ", ')':" ", '*':" ", '+':" ", '-':" ",
+'=':" ", ':':" ", ';':" ", ']':" ", '[':" ", '`':" ", '~':" ",
+})
 
 def get_model_engine(model):
     if isinstance(model, sentence_transformers.SentenceTransformer):
@@ -134,7 +142,31 @@ def my_save_word2vec_format(fname, vocab, vectors, binary=True, total_vec=2):
         # store in sorted order: most frequent words at the top
         for word, row in vocab.items():
             if binary:
-                row = row.astype(float32)
+                row = row.astype(np.float32)
                 fout.write(to_utf8(word) + b" " + row.tobytes())
             else:
                 fout.write(to_utf8("%s %s\n" % (word, ' '.join(repr(val) for val in row))))
+
+def dict_to_gensim(d):
+    """
+    Takes in python dict and converts to gensim KeyedVectors object
+    """
+    m = gensim.models.keyedvectors.Word2VecKeyedVectors(
+        vector_size=len(d[list(d.keys())[0]])
+    )
+    m.key_to_index = d
+    m.vectors = np.array(list(d.values()))
+    return m
+
+
+def gensim_to_fse(m):
+    """
+    Takes gensim model and converts to FSE model
+    """
+    with tempfile.NamedTemporaryFile() as tmp:
+        my_save_word2vec_format(
+            binary=True, fname=tmp.name, total_vec=len(m.key_to_index), 
+            vocab=m.key_to_index, vectors=m.vectors
+        )
+        m2 = gensim.models.keyedvectors.Word2VecKeyedVectors.load_word2vec_format(tmp.name, binary=True)
+    return m2

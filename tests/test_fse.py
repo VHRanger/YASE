@@ -4,6 +4,7 @@ Tests for fse library:
 https://github.com/oborchers/Fast_Sentence_Embeddings
 """
 from copy import deepcopy
+from yase.pandas import embedding, stringprocessing
 import gensim
 import numpy as np
 import pandas as pd
@@ -13,10 +14,10 @@ import unittest
 from unittest import TestCase
 import tempfile
 
-import embeddinglib
-from embeddinglib import mergeEmbeddings
-from embeddinglib.stringprocessing import tokenizeCol, tokenize
-from embeddinglib import stringprocessing, mergingmethods, embedding, encoders, utils
+import yase
+from yase import mergeEmbeddings
+from yase.pandas.stringprocessing import tokenizeCol, tokenize
+from yase import mergingmethods, encoders, utils
 
 from fse import Average, SplitIndexedList
 
@@ -36,18 +37,8 @@ testmodel = {
     "quotes": np.array([3.0, -1.2]),
 }
 
-m = gensim.models.keyedvectors.Word2VecKeyedVectors(
-    vector_size=len(testmodel[list(testmodel.keys())[0]])
-)
-m.key_to_index = testmodel
-m.vectors = np.array(list(testmodel.values()))
-
-with tempfile.NamedTemporaryFile() as tmp:
-    utils.my_save_word2vec_format(
-        binary=True, fname=tmp.name, total_vec=len(testmodel), 
-        vocab=m.key_to_index, vectors=m.vectors
-    )
-    m2 = gensim.models.keyedvectors.Word2VecKeyedVectors.load_word2vec_format(tmp.name, binary=True)
+m = utils.dict_to_gensim(testmodel)
+m2 = utils.gensim_to_fse(m)
 
 class TestFSECompat(TestCase):
     """
