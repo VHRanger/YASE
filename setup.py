@@ -12,7 +12,7 @@ setup(
     version="1.0.0",
     packages=find_packages(),
     long_description=long_description,
-    long_description_content_type='text/markdown'
+    long_description_content_type='text/markdown',
     package_data={
         # If any package contains *.txt or *.rst files, include them:
         '': ['README.md', 'requirements.txt']
