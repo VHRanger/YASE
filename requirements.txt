@@ -2,6 +2,6 @@ joblib
 numpy
 pandas
 pyarrow
-sklearn
+scikit-learn
 
 gensim

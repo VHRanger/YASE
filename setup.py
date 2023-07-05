@@ -16,7 +16,7 @@ setup(
         'gensim',
         'numpy',
         'pandas',
-        'sklearn',
+        'scikit-learn',
 		'pytest',
 		'pytest-cov'
       ],
