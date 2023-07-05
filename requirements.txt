@@ -4,5 +4,4 @@ numpy
 pandas
 pyarrow
 scikit-learn
-
 gensim
