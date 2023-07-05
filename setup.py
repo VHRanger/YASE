@@ -5,10 +5,11 @@ setup(
     name="YASE",
     version="1.0.0",
     packages=find_packages(),
+    description="Yet Another Sentence Embedding Library",
 
     package_data={
         # If any package contains *.txt or *.rst files, include them:
-        '': ['*.md', '*.txt', '*.rst']
+        '': ['README.md', 'requirements.txt']
     },
 
     install_requires=[

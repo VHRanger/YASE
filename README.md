@@ -7,8 +7,6 @@ Such matrices of documents can easily be queried using kd-trees (see notebook in
 The results can be tested for quality on a handcrafted evaluation dataset by checking how well the sentence embeddings cluster around the natural clusters of the existing ad campaigns.
 
 
-
-
 ### (Gensim) Weighed Sentence Embeddings with Gensim model
 ```python
     import gensim.downloader as model_api
@@ -22,7 +20,6 @@ The results can be tested for quality on a handcrafted evaluation dataset by che
     # create sentence embeddings from tokens
     my_embeddings = embedding.sentenceEmbedding(tokens, model, weights)
 ```
-
 
 
 ## Running unit tests
