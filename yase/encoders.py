@@ -15,7 +15,11 @@ import pyarrow as pa
 import yase
 from yase import utils
 
-import fse
+if utils.HAS_FSE:
+    import fse
+if utils.HAS_SBERT:
+    import sentence_transformers
+
 
 def route_models(
         column, model, model_router, 
@@ -35,10 +39,10 @@ def route_models(
             verbose=verbose
         )
     return res
-
     # TODO: If routes has a key thats missing in model, 
     #       log it here
     # TODO: Make fallback model as well
+
 
 def embed_column(column, model, model_router=None, verbose=True,
                  replace_dict=None, col_name=None):
@@ -67,7 +71,7 @@ def embed_column(column, model, model_router=None, verbose=True,
     vector_size = utils.get_model_vector_size(model)
     # Set result column names
     # TODO: make get_column_name method
-    if col_name == None:
+    if col_name is None:
         try:
             col_name = column.name
         except:
@@ -77,18 +81,18 @@ def embed_column(column, model, model_router=None, verbose=True,
     res = None
     # If routing by models, start here and recurse
     if model_router:
-        if isinstance(column, fse.inputs.BaseIndexedList):
+        if utils.HAS_FSE and isinstance(column, fse.inputs.BaseIndexedList):
             raise ValueError("data must be raw string column, got {column}")
         res = route_models(
             column, model, model_router, 
             vector_size=vector_size, verbose=verbose)
-    elif engine == "fse":
+    elif utils.HAS_FSE and engine == "fse":
         # If input is not native fse type, cast to sentence embedding
         if not isinstance(column, fse.inputs.BaseIndexedList):
             column = fse.SplitIndexedList(list(column))
         model.train(column)
         res = model.sv.vectors
-    elif engine == "sbert":
+    elif utils.HAS_SBERT and engine == "sbert":
         import sentence_transformers
         res = model.encode(column)
     elif engine == "pandas":

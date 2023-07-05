@@ -51,9 +51,9 @@ REMOVE_CHAR = OrderedDict({
 })
 
 def get_model_engine(model):
-    if isinstance(model, sentence_transformers.SentenceTransformer):
+    if HAS_SBERT and isinstance(model, sentence_transformers.SentenceTransformer):
         return "sbert"
-    elif isinstance(model, fse.models.base_s2v.BaseSentence2VecModel):
+    elif HAS_FSE and isinstance(model, fse.models.base_s2v.BaseSentence2VecModel):
         return "fse"
     else:
         return "pandas"
@@ -61,12 +61,12 @@ def get_model_engine(model):
 
 def get_model_vector_size(model):
     res = None
-    if isinstance(model, sentence_transformers.SentenceTransformer):
+    if HAS_SBERT and isinstance(model, sentence_transformers.SentenceTransformer):
         # TODO: This is super hackish, find a better wayS
         res = model[-2].__dict__['word_embedding_dimension']
-    elif isinstance(model, fse.models.base_s2v.BaseSentence2VecModel):
+    elif HAS_FSE and isinstance(model, fse.models.base_s2v.BaseSentence2VecModel):
         res = model.sv.vector_size
-    elif isinstance(model, gensim.models.keyedvectors.KeyedVectors):
+    elif HAS_GENSIM and isinstance(model, gensim.models.keyedvectors.KeyedVectors):
         res = model.vector_size
     elif isinstance(model, dict):
         try:
@@ -93,7 +93,7 @@ def normalize_column(column):
     """
     col = column
     if isinstance(column, pd.Series):
-        if column.dtype not in ['string']:
+        if column.dtype not in ['str']:
             col = column.astype('str')
     elif HAS_PA:
         if isinstance(column, pa.Array):
