@@ -73,7 +73,7 @@ def tokenizeCol(toClean: Iterable[str],
         pattern = re.compile("|".join(rep.keys()))
         def replacer(text):
             return rep[re.escape(text.group(0))]
-        result = result.str.replace(pattern, replacer)
+        result = result.str.replace(pattern, replacer, regex=True)
     if type(split) is str:
         result = result.str.split(split)
     elif split:
