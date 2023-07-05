@@ -1,0 +1,7 @@
+joblib
+numpy
+pandas
+pyarrow
+sklearn
+
+gensim

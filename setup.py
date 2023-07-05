@@ -12,6 +12,7 @@ setup(
     },
 
     install_requires=[
+        # TODO: match to requirements.txt
         'gensim',
         'numpy',
         'pandas',
