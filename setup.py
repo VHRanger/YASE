@@ -11,6 +11,9 @@ setup(
     name="YASE",
     version="1.0.0",
     packages=find_packages(),
+    license='MIT',
+    author='Matt Ranger',
+    url='https://github.com/VHRanger/YASE/',
     long_description=long_description,
     long_description_content_type='text/markdown',
     package_data={
