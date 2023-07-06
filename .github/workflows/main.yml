@@ -6,7 +6,7 @@ jobs:
   test-job:
     strategy:
       matrix:
-        os: [macos-latest, windows-latest]
+        os: [macos-latest, windows-latest, ubuntu-latest]
         python-version: ["3.11"]
     runs-on: ${{ matrix.os }}
     steps:
@@ -26,6 +26,7 @@ jobs:
       - name: Build package
         run: python -m build
   build-and-publish:
+    if: github.ref == 'refs/heads/prod'
     permissions:
       id-token: write
     runs-on: ${{ matrix.os }}
