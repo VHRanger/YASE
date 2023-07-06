@@ -1,13 +1,16 @@
 # TODO: 
 
-10. Use MUSE Models in 9
+
+- PR DS Repo
+
+-----
+NEXT TASKS
+
+- support fallback
 
 - pyarrow based processing
     - using: https://arrow.apache.org/docs/python/generated/pyarrow.compute.ascii_split_whitespace.html#pyarrow.compute.ascii_split_whitespace
 
-
------
-NEXT TASKS
 
 - Support Vaex
 
@@ -23,6 +26,8 @@ NEXT TASKS
 
 - test new embedder more rigorously
       separate text test from embedding testing
+
+- support fasttext
 
 - support PolaRS (maybe just through PyArrow)
 
