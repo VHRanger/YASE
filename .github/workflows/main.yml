@@ -4,6 +4,8 @@ on: [push]
 
 jobs:
   build:
+    permissions:
+      id-token: write
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
