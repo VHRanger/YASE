@@ -122,7 +122,7 @@ def embed_column(column, model, model_router=None, verbose=True,
                 for i in range(vector_size)]
     )
     if verbose:
-        print(f"{column.name} time: {time.time() - start_t :.2f}")
+        print(f"{col_name} time: {time.time() - start_t :.2f}")
     return my_embeddings
 
 
