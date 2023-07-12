@@ -3,10 +3,14 @@
 
 - PR DS Repo
 
+- add dict model from icbsv2
+
 -----
 NEXT TASKS
 
 - support fallback
+
+- fix namespacing -- dont need encoders to do it
 
 - pyarrow based processing
     - using: https://arrow.apache.org/docs/python/generated/pyarrow.compute.ascii_split_whitespace.html#pyarrow.compute.ascii_split_whitespace
